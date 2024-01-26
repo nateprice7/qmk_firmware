@@ -1,6 +1,6 @@
 // Copyright 2023 QMK
 // SPDX-License-Identifier: GPL-2.0-or-later
- 
+
 #include QMK_KEYBOARD_H
 
 #define QWERTY 0 // Base qwerty
@@ -30,6 +30,9 @@
 *                                 | BkSp | Del  |------|         |------|Return| Space|
 *                                 |      |      | End  |         | PgDn |      |      |
 *                                 `--------------------'         `--------------------'
+*                                                ,-------------------.
+*                                                | Esc | Esc  |  Esc |
+*                                                `-------------------'
 */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -43,7 +46,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               KC_GRV,   KC_INS,   KC_LEFT,  KC_RGHT,                                                                                       KC_UP,    KC_DOWN,  KC_LBRC,  KC_RBRC,
                                                       KC_LCTL,  KC_LALT,                                               KC_RGUI,  KC_RCTL,
                                                                 KC_HOME,                                               KC_PGUP,
-                                            KC_BSPC,  KC_DEL,   KC_END,                                                KC_PGDN,  KC_ENTER, KC_SPC
+                                            KC_BSPC,  KC_DEL,   KC_END,                                                KC_PGDN,  KC_ENTER, KC_SPC,
+                                            KC_ESC,KC_ESC,KC_ESC
   )
 
 };

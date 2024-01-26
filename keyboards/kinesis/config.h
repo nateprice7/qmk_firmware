@@ -31,6 +31,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
 
+#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+/* Auto shift settings
+#define NO_AUTO_SHIFT_TAB
+#define AUTO_SHIFT_REPEAT
+*/
+
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.

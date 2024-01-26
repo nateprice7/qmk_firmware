@@ -21,8 +21,8 @@
         "debounce_type": "sym_eager_pk"
     },
     "matrix_pins": {
-        "cols": ["LINE_PIN18", "LINE_PIN14", "LINE_PIN15", "LINE_PIN20", "LINE_PIN22", "LINE_PIN19", "LINE_PIN6"],
-        "rows": ["LINE_PIN8", "LINE_PIN9", "LINE_PIN10", "LINE_PIN11", "LINE_PIN7", "LINE_PIN16", "LINE_PIN5", "LINE_PIN3", "LINE_PIN4", "LINE_PIN1", "LINE_PIN0", "LINE_PIN2", "LINE_PIN17", "LINE_PIN23", "LINE_PIN21"]
+        "cols": ["LINE_PIN18", "LINE_PIN14", "LINE_PIN15", "LINE_PIN20", "LINE_PIN22", "LINE_PIN19", "LINE_PIN6", "LINE_PIN35", "LINE_PIN34", "LINE_PIN33"],
+        "rows": ["LINE_PIN8", "LINE_PIN9", "LINE_PIN10", "LINE_PIN11", "LINE_PIN7", "LINE_PIN16", "LINE_PIN5", "LINE_PIN3", "LINE_PIN4", "LINE_PIN1", "LINE_PIN0", "LINE_PIN2", "LINE_PIN17", "LINE_PIN23", "LINE_PIN21", "LINE_PIN36"]
     },
     "diode_direction": "COL2ROW",
     "indicators": {
@@ -121,7 +121,10 @@
                 {"matrix": [2, 5], "x": 6.25, "y": 8},
                 {"matrix": [6, 6], "x": 8.25, "y": 8},
                 {"matrix": [7, 5], "x": 9.25, "y": 7, "h": 2},
-                {"matrix": [6, 5], "x": 10.25, "y": 7, "h": 2}
+                {"matrix": [6, 5], "x": 10.25, "y": 7, "h": 2},
+                {"matrix": [15, 7], "x": 16, "y": 0, "h": 0.85},
+                {"matrix": [15, 8], "x": 17, "y": 0, "h": 0.85},
+                {"matrix": [15, 9], "x": 18, "y": 0, "h": 0.85}
             ]
         }
     }
