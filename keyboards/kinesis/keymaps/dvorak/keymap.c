@@ -59,6 +59,12 @@ enum {
     TD_H_ESC
 };
 
+static inline uint16_t RSFT_IF_CAPSWORD(uint16_t keycode) {
+    return unlikely(is_caps_word_on())
+        ? RSFT(keycode)
+        : keycode;
+}
+
 void u_tmux(tap_dance_state_t *state, void *user_data) {
     if (state->count >= 2) {
         SEND_STRING(SS_LCTL("k"));
@@ -66,7 +72,8 @@ void u_tmux(tap_dance_state_t *state, void *user_data) {
         //tap_code16(C(KC_K));
         reset_tap_dance(state);
     } else {
-        register_code(KC_U);
+        register_code16(RSFT_IF_CAPSWORD(KC_U));
+        //register_code(KC_U);
     }
 }
 void u_tmux_reset(tap_dance_state_t *state, void *user_data)
@@ -75,13 +82,32 @@ void u_tmux_reset(tap_dance_state_t *state, void *user_data)
         unregister_code(KC_U);
     }
 }
+void h_esc(tap_dance_state_t *state, void *user_data) {
+    if (state->count >= 2) {
+        //SEND_STRING(KC_ESC);
+        tap_code16(KC_ESC);
+        //SEND_STRING("Safety dance!");
+        //tap_code16(C(KC_K));
+        reset_tap_dance(state);
+    } else {
+        register_code16(RSFT_IF_CAPSWORD(KC_H));
+        //register_code(KC_U);
+    }
+}
+void h_esc_reset(tap_dance_state_t *state, void *user_data)
+{
+    if (state->count < 2) {
+        unregister_code(KC_H);
+    }
+}
 
 // Associate our tap dance key with its functionality
 tap_dance_action_t tap_dance_actions[] = {
     //[U_LAYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ql_finished, ql_reset),
     [U_TMUX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, u_tmux, u_tmux_reset),
     //[U_TMUX] = ACTION_TAP_DANCE_FN(u_tmux),
-    [TD_H_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_H, KC_ESC),
+    [TD_H_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, h_esc, h_esc_reset),
+    //[TD_H_ESC] = ACTION_TAP_DANCE_DOUBLE(RSFT_IF_CAPSWORD(KC_H), KC_ESC),
 };
 
 
@@ -92,6 +118,30 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 175;
         default:
             return TAPPING_TERM;
+    }
+}
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+        //case KC_MINS: // CHANGE - do not shift -_ (see below)
+            add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
+            send_keyboard_report();
+            return true;
+
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_MINS: // CHANGE - default is -_ is shifted.
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+        // Tapdance keys are handled manually.
+        case TD(U_TMUX):
+        case TD(TD_H_ESC):
+            return true;
+
+        default:
+            return false; // Deactivate Caps Word.
     }
 }
 

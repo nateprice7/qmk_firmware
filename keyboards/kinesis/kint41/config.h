@@ -23,3 +23,5 @@
 
 // in clock cycles
 #define GPIO_INPUT_PIN_DELAY 0
+#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+#define TAPPING_TERM 200
