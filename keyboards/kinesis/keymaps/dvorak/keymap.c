@@ -56,7 +56,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 ///https://github.com/qmk/qmk_firmware/blob/master/docs/feature_tap_dance.md
 enum {
     U_TMUX,
-    TD_H_ESC
+    TD_H_ESC,
+    TD_CMD_MAC,
+    TD_CMD_PC
 };
 
 static inline uint16_t RSFT_IF_CAPSWORD(uint16_t keycode) {
@@ -100,6 +102,52 @@ void h_esc_reset(tap_dance_state_t *state, void *user_data)
         unregister_code(KC_H);
     }
 }
+void h_mac(tap_dance_state_t *state, void *user_data) {
+    if (state->count >= 2) {
+        //SEND_STRING(KC_ESC);
+        if (layer_state_is(_DVORAK_MAC_MODE)) {
+            //if already set, then switch it off
+            layer_off(_DVORAK_MAC_MODE);
+        } else {
+            //if not already set, then switch the layer on
+            layer_on(_DVORAK_MAC_MODE);
+        }
+        //tap_code16(C(KC_K));
+        reset_tap_dance(state);
+    } else {
+        register_code16(RSFT_IF_CAPSWORD(KC_RCTL));
+        //register_code(KC_U);
+    }
+}
+void h_mac_reset(tap_dance_state_t *state, void *user_data)
+{
+    if (state->count < 2) {
+        unregister_code(KC_RCTL);
+    }
+}
+void h_pc(tap_dance_state_t *state, void *user_data) {
+    if (state->count >= 2) {
+        //SEND_STRING(KC_ESC);
+        if (layer_state_is(_DVORAK_MAC_MODE)) {
+            //if already set, then switch it off
+            layer_off(_DVORAK_MAC_MODE);
+        } else {
+            //if not already set, then switch the layer on
+            layer_on(_DVORAK_MAC_MODE);
+        }
+        //tap_code16(C(KC_K));
+        reset_tap_dance(state);
+    } else {
+        register_code16(RSFT_IF_CAPSWORD(KC_RGUI));
+        //register_code(KC_U);
+    }
+}
+void h_pc_reset(tap_dance_state_t *state, void *user_data)
+{
+    if (state->count < 2) {
+        unregister_code(KC_RGUI);
+    }
+}
 
 // Associate our tap dance key with its functionality
 tap_dance_action_t tap_dance_actions[] = {
@@ -108,6 +156,8 @@ tap_dance_action_t tap_dance_actions[] = {
     //[U_TMUX] = ACTION_TAP_DANCE_FN(u_tmux),
     [TD_H_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, h_esc, h_esc_reset),
     //[TD_H_ESC] = ACTION_TAP_DANCE_DOUBLE(RSFT_IF_CAPSWORD(KC_H), KC_ESC),
+    [TD_CMD_MAC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, h_mac, h_mac_reset),
+    [TD_CMD_PC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, h_pc, h_pc_reset),
 };
 
 
@@ -138,6 +188,8 @@ bool caps_word_press_user(uint16_t keycode) {
         // Tapdance keys are handled manually.
         case TD(U_TMUX):
         case TD(TD_H_ESC):
+        case TD(TD_CMD_MAC):
+        case TD(TD_CMD_PC):
             return true;
 
         default:
@@ -155,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,       KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,        KC_B,   KC_M,     KC_W,     KC_V,     KC_Z,    KC_RSFT,
                        KC_GRV,  KC_INS, KC_LEFT, KC_RIGHT,                          KC_UP,  KC_DOWN, KC_LBRC, KC_RBRC,
 
-                            KC_LCTL, KC_LALT,        KC_RALT,    KC_RCTL,
+                            KC_LCTL, KC_LALT,        KC_RALT,    TD(TD_CMD_MAC),
                                      KC_HOME,        KC_PGUP,
                    KC_BSPC, KC_DEL,  KC_END,        KC_PGDN, KC_ENT, KC_SPC,
                    KEYPAD,CMD,KC_ESC
@@ -188,16 +240,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_DVORAK_MAC_MODE] = LAYOUT(
         // left hand
-        KC_CAPS,  KC_F1,   KC_F2,   KC_F3,   KC_F4,  KC_F5, KC_F6, KC_F7, KC_F8,        KC_F9,  KC_F10,   KC_F11,   KC_F12,   KC_PSCR, KC_SCRL, KC_PAUS, KC_NUM, KC_PWR,
-        KC_EQL,   KC_1,    KC_2,    KC_3,    KC_4,   KC_5,        KC_6,   KC_7,     KC_8,     KC_9,     KC_0,    KC_MINS,
-        KC_TAB,   KC_QUOT, KC_COMM, KC_DOT,  KC_P,   KC_Y,        KC_F,   KC_G,     KC_C,     KC_R,     KC_L,    KC_SLSH,
-        KC_ESC,   KC_A,    KC_O,    KC_E,    KC_U,   KC_I,        KC_D,   KC_H,     KC_T,     KC_N,     KC_S,    KC_BSLS,
-        KC_LSFT,  KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,        KC_B,   KC_M,     KC_W,     KC_V,     KC_Z,    KC_RSFT,
-                  KC_GRV,  KC_INS,  KC_LEFT, KC_RIGHT,                          KC_UP,  KC_DOWN, KC_LBRC,    KC_RBRC,
+        _______,  _______,  _______,   _______,   _______,  _______, _______, _______, _______,        _______,  _______,   _______,   _______,   _______, _______, _______, _______, _______,
+        _______,   _______,    _______,    _______,    _______,   _______,        _______,   _______,     _______,     _______,     _______,    _______,
+        _______,   _______, _______, _______,  _______,   _______,        _______,   _______,     _______,     _______,     _______,    _______,
+        _______,   _______,    _______,    _______,    _______,   _______,        _______,   _______,     _______,     _______,     _______,    _______,
+        _______,  _______, _______,    _______,    _______,   _______,        _______,   _______,     _______,     _______,     _______,    _______,
+                  _______,  _______,  _______, _______,                          _______,  _______, _______,    _______,
 
-                            KC_LGUI, KC_LALT,        KC_RCTL,    KC_RGUI,
-                                     KC_HOME,        KC_PGUP,
-                   KC_BSPC, KC_DEL,  KC_END,        KC_PGDN, KC_ENT, KC_SPC,
-                   KC_ESC,KC_ESC,KC_ESC
+                            KC_LGUI, KC_RCTL,        KC_RALT,    TD(TD_CMD_PC),
+                                     _______,        _______,
+                   _______, _______,  _______,        _______, _______, _______,
+                   _______,_______,_______
     )
 };
